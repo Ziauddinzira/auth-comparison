@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ZeroTrust Auth</title>
+</head>
+<body>
+  <h2>ZeroTrust Login</h2>
+
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <p id="loginMsg"></p>
+
+  <h3>Secure Data</h3>
+  <button id="getData">Get Data</button>
+  <pre id="secureData"></pre>
+
+<script>
+  let token = '';
+  const loginForm = document.getElementById('loginForm');
+  const loginMsg = document.getElementById('loginMsg');
+  const getDataBtn = document.getElementById('getData');
+  const secureData = document.getElementById('secureData');
+
+  loginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      })
+    });
+    const data = await res.json();
+    if(data.token){
+      token = data.token;
+      loginMsg.textContent = 'Login successful';
+    } else {
+      loginMsg.textContent = 'Login failed';
+    }
+  });
+
+  getDataBtn.addEventListener('click', async () => {
+    const res = await fetch('/data', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    secureData.textContent = await res.text();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>JWT Auth App</title>
+</head>
+
+<body>
+    <h2>JWT Authentication</h2>
+
+    <h3>Register</h3>
+    <form id="registerForm">
+        <input type="email" id="regEmail" placeholder="Email" required>
+        <input type="password" id="regPassword" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+    <p id="registerMsg"></p>
+
+    <h3>Login</h3>
+    <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p id="loginMsg"></p>
+
+    <h3>Protected Data</h3>
+    <button id="getData">Get Protected</button>
+    <pre id="protectedData"></pre>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const loginForm = document.getElementById('loginForm');
+        const registerMsg = document.getElementById('registerMsg');
+        const loginMsg = document.getElementById('loginMsg');
+        const getDataBtn = document.getElementById('getData');
+        const protectedData = document.getElementById('protectedData');
+
+        registerForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const res = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: document.getElementById('regEmail').value,
+                    password: document.getElementById('regPassword').value
+                })
+            });
+            registerMsg.textContent = await res.text();
+        });
+
+        let token = '';
+        loginForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: document.getElementById('loginEmail').value,
+                    password: document.getElementById('loginPassword').value
+                })
+            });
+            const data = await res.json();
+            if (data.token) {
+                token = data.token;
+                loginMsg.textContent = 'Login successful';
+            } else {
+                loginMsg.textContent = 'Login failed';
+            }
+        });
+
+        getDataBtn.addEventListener('click', async () => {
+            const res = await fetch('/protected', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            protectedData.textContent = await res.text();
+        });
+    </script>
+</body>
+
+</html>
