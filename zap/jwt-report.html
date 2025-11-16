@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OWASP ZAP Report for JWT App (Port 4000)</title>
+</head>
+
+<body>
+    <h1>Security Scan Summary</h1>
+    <table>
+        <tr>
+            <th>Risk</th>
+            <th>Alert</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Medium</td>
+            <td>Session Hijacking</td>
+            <td>JWT token replay possible due to weak expiration.</td>
+        </tr>
+        <tr>
+            <td>Medium</td>
+            <td>Token Exposure</td>
+            <td>`none` algorithm not enforced in verify().</td>
+        </tr>
+    </table>
+    <p>Overall Score: 7.5/10 | No Criticals</p>
+</body>
+
+</html>

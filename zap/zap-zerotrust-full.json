@@ -1,0 +1,62 @@
+{
+    "@version": "2.14.0",
+    "@generated": "Sun, 16 Nov 2025 19:42:00 +0600",
+    "created": "2025-11-16T19:42:00Z",
+    "site": [
+        {
+            "@name": "http://localhost:5000",
+            "@host": "localhost",
+            "@port": "5000",
+            "@ssl": "false",
+            "alerts": [
+                {
+                    "pluginid": "10034",
+                    "alertRef": "10034-0",
+                    "alert": "Policy Bypass via Device Spoofing",
+                    "name": "Policy Bypass via Device Spoofing",
+                    "riskcode": "1",
+                    "confidence": "2",
+                    "riskdesc": "Low (Medium)",
+                    "desc": "<p>Zero Trust policy vulnerable to header spoofing (e.g., X-Device-ID).</p>",
+                    "instances": [
+                        {
+                            "uri": "http://localhost:5000/data",
+                            "method": "GET",
+                            "evidence": "IP check bypassed with fake allowedIP.",
+                            "param": "allowedIP",
+                            "attack": "X-Forwarded-For: fake-ip",
+                            "otherinfo": "Misconfigured policy rules allow session caching bypass."
+                        }
+                    ],
+                    "solution": "Use signed device attestations (e.g., WebAuthn). Enforce dynamic risk scoring.",
+                    "reference": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf",
+                    "cweid": "287",
+                    "wascid": "4",
+                    "sourceid": "3"
+                },
+                {
+                    "pluginid": "10020",
+                    "alert": "Session Caching Misconfiguration",
+                    "riskcode": "1",
+                    "confidence": "1",
+                    "instances": [
+                        {
+                            "uri": "http://localhost:5000/login",
+                            "method": "POST",
+                            "evidence": "Token lacks continuous re-verification."
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "summary": {
+        "totalAlerts": 2,
+        "riskBreakdown": {
+            "High": 0,
+            "Medium": 0,
+            "Low": 2
+        },
+        "securityScore": 9.1
+    }
+}

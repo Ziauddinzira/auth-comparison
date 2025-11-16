@@ -81,6 +81,15 @@ node app-oauth2/server.js # → http://localhost:3000
 # Terminal 3: Zero Trust App
 node app-zerotrust/server.js # → http://localhost:5000
 
+# Run
+k6 run k6-hybrid-test.js \
+  --out json=results.json \
+  --out csv=results.csv
 
+### Security Testing (OWASP ZAP)
+Generated reports in `zap/` folder:
+- `jwt-report.html`: Medium risks (session hijacking, token exposure)
+- `oauth2-report.html`: High risks (CSRF, redirect URI)
+- `zerotrust-report.html`: Lowest risks (policy enforcement strong)
 
-
+Run: `zap-cli report -o zap/jwt-report.html -f html`

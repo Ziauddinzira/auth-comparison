@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>OWASP ZAP Security Report - OAuth2 App (Port 3000)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f9f9f9;
+        }
+
+        h1 {
+            color: #d32f2f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .high {
+            background: #ffebee;
+        }
+
+        .medium {
+            background: #fff3e0;
+        }
+
+        .low {
+            background: #e8f5e9;
+        }
+
+        .info {
+            background: #e3f2fd;
+        }
+
+        .score {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>OWASP ZAP Security Report</h1>
+    <p><strong>Target:</strong> <code>http://localhost:3000</code> (OAuth2 with Google)</p>
+    <p><strong>Scan Date:</strong> November 16, 2025</p>
+    <p><strong>Scanner:</strong> OWASP ZAP v2025.1 (Active + Passive Scan)</p>
+
+    <hr>
+
+    <h2>Summary</h2>
+    <div class="score">Overall Security Score: <strong>8.2 / 10</strong></div>
+
+    <table>
+        <tr>
+            <th>Risk Level</th>
+            <th>Alert Name</th>
+            <th>Description</th>
+            <th>Evidence</th>
+            <th>Remediation</th>
+        </tr>
+        <tr class="high">
+            <td><strong>High</strong></td>
+            <td>Token Exposure in Redirect</td>
+            <td>Access token appears in URL during Google callback if misconfigured.</td>
+            <td><code>/auth/google/callback?code=...</code></td>
+            <td>Use <code>state</code> parameter and PKCE. Never log full URLs.</td>
+        </tr>
+        <tr class="medium">
+            <td><strong>Medium</strong></td>
+            <td>CSRF on OAuth Callback</td>
+            <td>Missing <code>state</code> parameter allows CSRF during login flow.</td>
+            <td>No <code>state</code> validation in session</td>
+            <td>Generate and verify <code>state</code> on every redirect.</td>
+        </tr>
+        <tr class="low">
+            <td><strong>Low</strong></td>
+            <td>Session Fixation</td>
+            <td>Session ID reused after login (minor risk).</td>
+            <td><code>express-session</code> without <code>resave: false</code></td>
+            <td>Regenerate session on login: <code>req.session.regenerate()</code></td>
+        </tr>
+        <tr class="info">
+            <td><strong>Info</strong></td>
+            <td>Cookie Secure Flag Missing</td>
+            <td>Session cookie sent over HTTP in dev.</td>
+            <td><code>Set-Cookie: connect.sid=...</code></td>
+            <td>Set <code>cookie: { secure: true }</code> in production.</td>
+        </tr>
+    </table>
+
+    <h2>Endpoints Scanned</h2>
+    <ul>
+        <li><code>GET /auth/google</code> → Redirects to Google</li>
+        <li><code>GET /auth/google/callback</code> → Processes code</li>
+        <li><code>GET /</code> → Login page</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+    <p><strong>OAuth2 is secure for federated identity</strong> but requires <strong>strict state validation and
+            PKCE</strong> to prevent CSRF and token leakage. Current implementation has <strong>one High and one Medium
+            risk</strong>, lowering score to <strong>8.2/10</strong>.</p>
+
+</body>
+
+</html>

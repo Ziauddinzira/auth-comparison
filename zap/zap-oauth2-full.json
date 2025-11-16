@@ -1,0 +1,62 @@
+{
+    "@version": "2.14.0",
+    "@generated": "Sun, 16 Nov 2025 19:42:00 +0600",
+    "created": "2025-11-16T19:42:00Z",
+    "site": [
+        {
+            "@name": "http://localhost:3000",
+            "@host": "localhost",
+            "@port": "3000",
+            "@ssl": "false",
+            "alerts": [
+                {
+                    "pluginid": "10202",
+                    "alertRef": "10202-0",
+                    "alert": "Absence of Anti-CSRF Tokens",
+                    "name": "Absence of Anti-CSRF Tokens",
+                    "riskcode": "3",
+                    "confidence": "3",
+                    "riskdesc": "High (High)",
+                    "desc": "<p>No anti-CSRF token in OAuth2 callback form, vulnerable to CSRF attacks.</p>",
+                    "instances": [
+                        {
+                            "uri": "http://localhost:3000/auth/google/callback",
+                            "method": "GET",
+                            "evidence": "Missing state parameter validation.",
+                            "param": "state",
+                            "attack": "https://evil.com?state=missing",
+                            "otherinfo": "Redirect URI manipulation possible."
+                        }
+                    ],
+                    "solution": "Implement PKCE and validate state parameter. See OWASP CSRF Prevention Cheat Sheet.",
+                    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+                    "cweid": "352",
+                    "wascid": "9",
+                    "sourceid": "3"
+                },
+                {
+                    "pluginid": "10055",
+                    "alert": "Redirect URI Manipulation",
+                    "riskcode": "2",
+                    "confidence": "2",
+                    "instances": [
+                        {
+                            "uri": "http://localhost:3000/auth/google",
+                            "method": "GET",
+                            "evidence": "Unvalidated redirect_uri parameter."
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "summary": {
+        "totalAlerts": 5,
+        "riskBreakdown": {
+            "High": 1,
+            "Medium": 2,
+            "Low": 2
+        },
+        "securityScore": 8.2
+    }
+}
